@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3350E0">
+<title>Vokabelheft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#F3F5FC; --surface:#FFFFFF; --surface-2:#E9EDFA;
+  --ink:#141B34; --ink-soft:#5B6485; --line:#DCE1F1;
+  --brand:#3350E0; --brand-ink:#FFFFFF; --brand-soft:#E4E9FF;
+  --gold:#E38F0B; --gold-bg:#FFF3DC;
+  --green:#0E7F52; --green-bg:#DBF5E9;
+  --rose:#C92A50; --rose-bg:#FCE2E8;
+  --shadow:0 6px 18px rgba(20,27,52,.10);
+  --shadow-lift:0 12px 30px rgba(20,27,52,.16);
+  --sans:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --round:'Baloo 2','Nunito',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101527; --surface:#1B2239; --surface-2:#28304C;
+    --ink:#F2F5FF; --ink-soft:#A9B2D2; --line:#333C5D;
+    --brand:#8AA0FF; --brand-ink:#0E1430; --brand-soft:#28315A;
+    --gold:#FFC94D; --gold-bg:#3B3218;
+    --green:#5BDCA6; --green-bg:#12362A;
+    --rose:#FF8FA5; --rose-bg:#3B1E27;
+    --shadow:0 6px 18px rgba(0,0,0,.5); --shadow-lift:0 12px 30px rgba(0,0,0,.6);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);font-size:17px;line-height:1.5;
+  font-weight:600;min-height:100vh;overflow-x:hidden;overscroll-behavior-y:contain}
+#app{max-width:560px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;
+  padding:calc(10px + env(safe-area-inset-top)) 18px calc(26px + env(safe-area-inset-bottom))}
+h1{font-family:var(--round);font-size:30px;font-weight:800;letter-spacing:-.01em;margin:12px 0 2px}
+h2{font-family:var(--round);font-size:20px;font-weight:800;margin:26px 0 10px}
+p.lead{color:var(--ink-soft);margin:0 0 14px;font-size:15px;font-weight:600}
+button{font-family:inherit;font-size:17px;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:3px;border-radius:8px}
+
+/* ---------- Statusleiste ---------- */
+.crown{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;
+  background:var(--surface);box-shadow:var(--shadow);font-weight:900;font-size:15px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip small{font-weight:700;color:var(--ink-soft);font-size:13px}
+.chip.gold{color:var(--gold)} .chip.fire{color:var(--rose)} .chip.due{color:var(--brand)}
+
+.ring{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:20px;
+  padding:14px 16px;box-shadow:var(--shadow);margin-top:14px}
+.ring svg{width:66px;height:66px;flex:none}
+.ring .txt{flex:1}
+.ring .big{font-family:var(--round);font-size:19px;font-weight:800;line-height:1.2}
+.ring .small{font-size:14px;color:var(--ink-soft);font-weight:700}
+.ring circle{fill:none;stroke-width:9;stroke-linecap:round}
+.ring .track{stroke:var(--surface-2)}
+.ring .fill{stroke:var(--brand);transition:stroke-dashoffset .8s cubic-bezier(.2,.9,.3,1)}
+.ring .pct{font-family:var(--round);font-size:19px;font-weight:800;fill:var(--ink)}
+
+/* ---------- Buttons ---------- */
+.btn{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;min-height:60px;padding:14px 18px;border-radius:18px;font-weight:900;
+  text-align:center;margin-top:11px;transition:transform .09s ease;font-family:var(--round);font-size:18px}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--brand);color:var(--brand-ink);box-shadow:var(--shadow)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:var(--shadow)}
+.btn.quiet{background:var(--surface-2);color:var(--ink)}
+.btn .sub{display:block;font-family:var(--sans);font-weight:700;font-size:13px;
+  color:var(--ink-soft);margin-top:1px}
+.btn.primary .sub{color:var(--brand-ink);opacity:.8}
+.btn:disabled{opacity:.4}
+.row{display:flex;gap:11px}
+.modelist .btn{position:relative}
+.pill{position:absolute;right:12px;top:12px;background:var(--gold-bg);color:var(--gold);
+  font-size:12px;font-weight:900;padding:3px 9px;border-radius:999px;font-family:var(--sans)}
+
+/* ---------- Kapitel ---------- */
+.sets{list-style:none;margin:0;padding:0}
+.setrow{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:10px;
+  border-radius:18px;background:var(--surface);border:2px solid var(--line);box-shadow:var(--shadow)}
+.setrow.on{border-color:var(--brand)}
+.setrow .name{flex:1;text-align:left;font-weight:800;font-size:16px;padding:4px 0}
+.setrow .learned{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-top:2px}
+.minibar{height:6px;border-radius:3px;background:var(--surface-2);margin-top:7px;overflow:hidden}
+.minibar i{display:block;height:100%;background:var(--green);border-radius:3px}
+.check{width:32px;height:32px;border:2px solid var(--line);border-radius:11px;flex:none;
+  display:grid;place-items:center;color:transparent;font-weight:900;font-size:17px}
+.setrow.on .check{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.iconbtn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:var(--surface-2);color:var(--ink-soft);font-size:18px;flex:none}
+
+/* ---------- Übungskarte ---------- */
+.dots{display:flex;gap:5px;margin:10px 0 2px;height:9px}
+.dots i{flex:1;border-radius:99px;background:var(--surface-2);transition:background .3s}
+.dots i.done{background:var(--green)}
+.dots i.miss{background:var(--rose)}
+.dots i.now{background:var(--brand)}
+.stage{flex:1;display:flex;flex-direction:column;justify-content:center;padding:12px 0 6px}
+.card{background:var(--surface);border-radius:26px;padding:26px 20px 28px;text-align:center;
+  box-shadow:var(--shadow-lift);position:relative}
+.card.ok{animation:pop .45s ease} .card.no{animation:shake .4s ease}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+.tag{display:inline-block;background:var(--brand-soft);color:var(--brand);font-size:12px;
+  font-weight:900;padding:4px 11px;border-radius:999px;margin-bottom:12px;letter-spacing:.02em}
+.tag.repeat{background:var(--gold-bg);color:var(--gold)}
+.prompt-label{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:10px}
+.word{font-family:var(--round);font-size:36px;font-weight:800;letter-spacing:-.01em;
+  line-height:1.15;word-break:break-word}
+.word.muted{color:var(--ink-soft);letter-spacing:.15em}
+.solution{font-family:var(--round);font-size:30px;font-weight:800;color:var(--green);margin-top:6px}
+.alts{font-size:14px;color:var(--ink-soft);font-weight:700;margin-top:4px}
+.tapme{color:var(--ink-soft);font-size:15px;font-weight:800;margin-top:22px}
+.speak{margin:18px auto 0;width:64px;height:64px;border-radius:50%;background:var(--gold-bg);
+  display:grid;place-items:center;border:2px solid var(--gold)}
+.speak:active{transform:scale(.92)}
+.speak svg{width:29px;height:29px;stroke:var(--gold);fill:none}
+.speak.playing{animation:ring 1s ease infinite}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(227,143,11,.45)}70%{box-shadow:0 0 0 15px rgba(227,143,11,0)}}
+
+/* ---------- Eingabe ---------- */
+.answerbox{margin-top:20px}
+.answerbox input{width:100%;padding:15px 16px;border-radius:16px;border:2px solid var(--line);
+  background:var(--bg);color:var(--ink);font-weight:800;font-size:20px;text-align:center;font-family:var(--sans)}
+.answerbox input:focus{outline:none;border-color:var(--brand)}
+.answerbox input.ok{border-color:var(--green);background:var(--green-bg)}
+.answerbox input.no{border-color:var(--rose);background:var(--rose-bg)}
+.verdict{margin-top:14px;font-weight:900;font-size:17px;min-height:24px;font-family:var(--round)}
+.verdict.ok{color:var(--green)} .verdict.no{color:var(--rose)} .verdict.close{color:var(--gold)}
+
+/* ---------- Multiple Choice ---------- */
+.opts{display:grid;gap:10px;margin-top:18px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:16px;
+  padding:15px 14px;font-weight:800;font-size:17px;box-shadow:var(--shadow);
+  transition:transform .09s ease,background .2s,border-color .2s;min-height:58px}
+.opt:active{transform:scale(.98)}
+.opt.right{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.opt.wrong{background:var(--rose-bg);border-color:var(--rose);color:var(--rose)}
+.opt.dim{opacity:.45}
+
+/* ---------- Kumpel ---------- */
+.buddy{width:74px;height:74px;margin:0 auto 6px;display:block}
+.buddy .body{fill:var(--brand)}
+.buddy .belly{fill:var(--brand-soft)}
+.buddy .eye{fill:var(--surface)}
+.buddy .pupil{fill:var(--ink)}
+.buddy .beak{fill:var(--gold)}
+.buddy.happy{animation:hop .6s ease}
+.buddy.sad{animation:tilt .6s ease}
+@keyframes hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}60%{transform:translateY(0)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}70%{transform:rotate(6deg)}}
+.buddy.big{width:110px;height:110px}
+
+/* ---------- fliegende Punkte ---------- */
+.floatpts{position:fixed;left:50%;top:40%;transform:translateX(-50%);font-family:var(--round);
+  font-weight:800;font-size:44px;color:var(--gold);z-index:60;pointer-events:none;
+  animation:rise 1.05s ease-out forwards;text-shadow:0 3px 12px rgba(0,0,0,.25)}
+@keyframes rise{0%{opacity:0;transform:translate(-50%,20px) scale(.6)}
+  25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-120px) scale(1)}}
+
+/* ---------- Formulare ---------- */
+label{display:block;font-weight:800;font-size:15px;margin:18px 0 7px}
+input[type=text],textarea,input[type=number]{width:100%;padding:13px 15px;border:2px solid var(--line);
+  border-radius:15px;background:var(--surface);color:var(--ink);font-weight:700;font-family:var(--sans)}
+input:focus,textarea:focus{outline:none;border-color:var(--brand)}
+textarea{min-height:200px;line-height:1.65;resize:vertical;font-size:16px}
+.hint{font-size:14px;color:var(--ink-soft);margin:8px 0 0;font-weight:600}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;
+  border-radius:16px;background:var(--surface);margin-bottom:10px;font-weight:800;box-shadow:var(--shadow)}
+.switch input{width:54px;height:31px;appearance:none;-webkit-appearance:none;background:var(--line);
+  border-radius:16px;position:relative;transition:background .15s;flex:none;cursor:pointer}
+.switch input:checked{background:var(--brand)}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:25px;height:25px;
+  border-radius:50%;background:#fff;transition:transform .15s}
+.switch input:checked::after{transform:translateX(23px)}
+.danger{color:var(--rose);font-weight:900;text-align:center;width:100%;padding:15px;margin-top:8px}
+
+/* ---------- Ergebnis ---------- */
+.stars{font-size:46px;letter-spacing:8px;min-height:58px}
+.star{display:inline-block;opacity:.2;transform:scale(.6);color:var(--ink-soft)}
+.star.lit{opacity:1;color:var(--gold);animation:starpop .55s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes starpop{0%{transform:scale(.4) rotate(-28deg)}70%{transform:scale(1.28) rotate(7deg)}100%{transform:scale(1) rotate(0)}}
+.result-num{font-family:var(--round);font-size:58px;font-weight:800;line-height:1}
+.gain{font-family:var(--round);font-size:22px;font-weight:800;color:var(--gold);margin-top:8px}
+.wrongword{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;
+  background:var(--surface);border-radius:15px;margin-bottom:9px;box-shadow:var(--shadow)}
+.wrongword b{font-weight:900;font-size:16px}
+.wrongword span{color:var(--ink-soft);text-align:right;font-size:15px;font-weight:700}
+.badge{display:flex;gap:13px;align-items:center;background:var(--gold-bg);border:2px solid var(--gold);
+  border-radius:18px;padding:14px 16px;margin-top:12px;font-weight:800;color:var(--ink)}
+.badge .ico{font-size:27px}
+.nextline{background:var(--surface);border-radius:15px;padding:13px 15px;margin-top:12px;
+  font-size:15px;font-weight:700;color:var(--ink-soft);box-shadow:var(--shadow)}
+
+footer{margin-top:auto;padding-top:22px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:var(--ink);
+  color:var(--bg);padding:12px 20px;border-radius:22px;font-weight:800;font-size:15px;z-index:70;
+  max-width:88vw;text-align:center}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:65}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<canvas id="confetti"></canvas>
+
+<script>
+"use strict";
+/* ==================================================================
+   1. Startvokabeln
+   ================================================================== */
+const START_SETS = [
+  {id:'u1', name:'My favourite … (Hobbys 1)', words:[
+    ['My favourite …','mein Lieblings…, meine Lieblings…'],['I like','mir gefällt, ich mag'],
+    ['to like','mögen, gern haben'],['to take photos','Fotos machen'],
+    ['great','großartig, toll, super'],['big','groß'],['sister','Schwester'],
+    ['best','beste, bester, bestes'],['and','und'],["we're",'wir sind'],
+    ['twin','Zwilling'],['to have','haben'],['funny','lustig, witzig'],
+    ['football','Fußball'],['food','Essen, Lebensmittel']
+  ]},
+  {id:'u2', name:'Hobbys 2 & zu Hause', words:[
+    ['to cook','kochen'],['netball','Korbball'],["he's",'er ist'],['good','gut'],
+    ['brother','Bruder'],['Who is it?','Wer ist es?'],['or','oder'],
+    ['hobby','Hobby'],['hobbies','Hobbys'],['you too?','du auch?'],
+    ['to watch','zuschauen, beobachten'],["you're",'du bist'],
+    ['My turn','Ich bin dran'],['to draw','zeichnen'],['picture','Bild'],
+    ['pet','Haustier'],['game','Spiel'],['to sing','singen'],['horse','Pferd'],
+    ['to dance','tanzen'],['house','Haus'],['at home','zu Hause'],
+    ['bored','gelangweilt'],["Let's …",'Lasst uns …'],['to go','gehen, fahren'],
+    ['to','zu, nach'],['How are you?','Wie geht es dir?']
+  ]},
+  {id:'u3', name:'The first day of school', words:[
+    ['fine','gut, in Ordnung'],['thanks','danke'],['this','dies, diese, dieser'],
+    ['here','hier'],['tomorrow','morgen'],['the first day of school','der erste Schultag'],
+    ['yes','ja'],['Come on!','Komm schon!'],['to come','kommen'],
+    ["It's time for",'Es ist Zeit für'],['ice cream','Eis'],
+    ['over there','da drüben'],['nervous','nervös, aufgeregt'],
+    ["Don't worry",'Keine Sorge'],['together','zusammen'],['to sit','sitzen'],
+    ['sports ground','Sportplatz'],['Mrs','Frau'],['year','Schuljahr, Jahr'],
+    ['to look at','anschauen, ansehen'],['us','uns'],['to look','schauen, aussehen']
+  ]},
+  {id:'u4', name:'Personalpronomen', words:[
+    ['I','ich'],['you','du'],['he','er'],['she','sie'],['it','es'],
+    ['we','wir'],['they','sie (Mehrzahl)'],['you','ihr']
+  ]}
+];
+
+/* ==================================================================
+   2. Speicher + Datenmodell
+   ================================================================== */
+const KEY='vokabelheft.v3', OLDKEY='vokabelheft.v2';
+const DAY=86400000, MIN=60000;
+/* Leitner-Stufen: so lange wartet ein Wort, bis es wieder drankommt */
+const STEPS=[3*MIN, 1*DAY, 3*DAY, 7*DAY, 21*DAY, 60*DAY];
+const STEP_NAMES=['neu','frisch gelernt','sitzt langsam','sitzt gut','fast sicher','sicher','im Kopf'];
+let storageWorks=true;
+
+function todayKey(d){ d=d||new Date(); return d.toISOString().slice(0,10); }
+function loadRaw(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }
+  catch(e){ storageWorks=false; return null; } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(state.data)); storageWorks=true; }
+  catch(e){ storageWorks=false; } }
+
+function freshData(){
+  return {
+    sets: START_SETS.map(s=>({id:s.id,name:s.name,words:s.words.map(w=>({en:w[0],de:w[1]}))})),
+    cards:{},
+    points:{total:0,rounds:0,bestStreak:0,perfect:0,days:{},dayStreak:0,lastDay:null},
+    settings:{autoSpeak:true,sound:true,goal:60,newPerRound:8,selected:['u1','u2','u3','u4']}
+  };
+}
+function migrate(old){
+  const d=freshData();
+  if(old.sets && old.sets.length) d.sets=old.sets;
+  if(old.settings){ d.settings=Object.assign(d.settings, old.settings); }
+  if(old.points) d.points=Object.assign(d.points, old.points);
+  if(old.stats){ /* alte Trefferzahlen in Leitner-Stufen übersetzen */
+    Object.keys(old.stats).forEach(k=>{
+      const s=old.stats[k];
+      const box=Math.max(0,Math.min(5,(s.r||0)-(s.f||0)));
+      d.cards[k]={box, due:Date.now(), r:s.r||0, f:s.f||0, seen:(s.r||0)+(s.f||0)};
+    });
+  }
+  return d;
+}
+let loaded=loadRaw(KEY);
+if(!loaded){ const old=loadRaw(OLDKEY); loaded = old? migrate(old) : null; }
+const state={ data: loaded || freshData(), view:'home', payload:null, session:null };
+(function fix(){
+  const d=state.data, f=freshData();
+  d.cards=d.cards||{}; d.points=Object.assign(f.points,d.points||{});
+  d.points.days=d.points.days||{};
+  d.settings=Object.assign(f.settings,d.settings||{});
+  if(!d.settings.selected.length) d.settings.selected=d.sets.map(s=>s.id);
+})();
+
+/* Tagesserie pflegen */
+(function dayStreak(){
+  const P=state.data.points, t=todayKey();
+  if(P.lastDay && P.lastDay!==t){
+    const gap=Math.round((new Date(t)-new Date(P.lastDay))/DAY);
+    if(gap>1) P.dayStreak=0;
+  }
+})();
+
+/* ==================================================================
+   3. Karten, Planung, Wiederholung
+   ================================================================== */
+function keyOf(setId,w){ return setId+'|'+w.en+'|'+w.de; }
+function cardOf(w){
+  const k=keyOf(w.setId,w);
+  if(!state.data.cards[k]) state.data.cards[k]={box:0,due:0,r:0,f:0,seen:0};
+  return state.data.cards[k];
+}
+function selectedSets(){
+  const sel=state.data.settings.selected;
+  const s=state.data.sets.filter(x=>sel.includes(x.id));
+  return s.length?s:state.data.sets;
+}
+function pool(){
+  const out=[]; selectedSets().forEach(s=>s.words.forEach(w=>out.push({setId:s.id,en:w.en,de:w.de})));
+  return out;
+}
+function allWords(){
+  const out=[]; state.data.sets.forEach(s=>s.words.forEach(w=>out.push({setId:s.id,en:w.en,de:w.de})));
+  return out;
+}
+function peek(w){ return state.data.cards[keyOf(w.setId,w)]||null; }   /* liest, ohne anzulegen */
+function isDue(w,now){ const c=peek(w); return !!c && c.seen>0 && c.due<=(now||Date.now()); }
+function isNew(w){ const c=peek(w); return !c || c.seen===0; }
+function isSafe(w){ const c=peek(w); return !!c && c.box>=4; }
+function isLapsed(w){ const c=peek(w); return !!c && c.seen>0 && c.box===0; }
+function dueCount(){ const n=Date.now(); return pool().filter(w=>isDue(w,n)).length; }
+
+/* Auswahl einer Runde: erst Fälliges, dann ein paar neue, dann die wackeligsten */
+function buildQueue(size){
+  const now=Date.now(), words=pool();
+  const due=words.filter(w=>isDue(w,now))
+                 .sort((a,b)=>cardOf(a).due-cardOf(b).due);
+  const fresh=words.filter(w=>isNew(w));
+  /* zuletzt falsch beantwortet: kommt vor allem Neuen wieder dran */
+  const lapsed=words.filter(w=>!isDue(w,now)&&isLapsed(w))
+                    .sort((a,b)=>peek(a).due-peek(b).due);
+  const rest=words.filter(w=>!isDue(w,now)&&!isNew(w)&&!isLapsed(w))
+                  .sort((a,b)=>(peek(a).box-peek(b).box)||(peek(a).due-peek(b).due));
+  const maxNew=state.data.settings.newPerRound;
+  let q=due.slice(0,size);
+  if(q.length<size) q=q.concat(lapsed.slice(0,size-q.length));
+  if(q.length<size) q=q.concat(fresh.slice(0,Math.min(maxNew,size-q.length)));
+  if(q.length<size) q=q.concat(rest.slice(0,size-q.length));
+  /* ganz am Anfang gibt es nur neue Wörter: dann auf eine sinnvolle Rundenlänge auffüllen */
+  if(q.length<8) q=q.concat(fresh.slice(q.filter(isNew).length, q.filter(isNew).length+(8-q.length)));
+  /* leicht mischen, damit die Reihenfolge nicht auswendig gelernt wird */
+  for(let i=q.length-1;i>0;i--){ const j=(Math.random()*(i+1))|0; [q[i],q[j]]=[q[j],q[i]]; }
+  return q;
+}
+/* Antwort verbuchen: richtig = eine Stufe hoch, falsch = zurück auf Anfang */
+function schedule(w,quality){   /* quality: 2 sicher, 1 knapp, 0 falsch */
+  const c=cardOf(w); c.seen++;
+  if(quality===0){ c.f++; c.box=0; c.due=Date.now()+STEPS[0]; }
+  else{
+    c.r++;
+    if(quality===1) c.box=Math.max(0,c.box);         /* knapp: Stufe halten */
+    else c.box=Math.min(STEPS.length-1,c.box+1);     /* sicher: eine Stufe hoch */
+    const jitter=0.9+Math.random()*0.2;
+    c.due=Date.now()+STEPS[c.box]*jitter;
+  }
+  save();
+}
+
+/* ==================================================================
+   4. Antwortprüfung
+   ================================================================== */
+function fold(s){
+  return String(s).toLowerCase().trim()
+    .replace(/[.!?,;:„“"'`´]/g,'')
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/\s+/g,' ');
+}
+function stripLead(s){ return s.replace(/^(to |the |a |an |der |die |das |den |dem |ein |eine |einen |sich )/,''); }
+function variants(solution){
+  const parts=String(solution).split(/[,/]|\bbzw\.\b/).map(x=>x.trim()).filter(Boolean);
+  const out=new Set();
+  parts.forEach(p=>{
+    const f=fold(p); out.add(f); out.add(stripLead(f));
+    out.add(f.replace(/\s*\(.*?\)\s*/g,' ').trim());          /* Klammern weg */
+    out.add(stripLead(f.replace(/\s*\(.*?\)\s*/g,' ').trim()));
+  });
+  out.delete('');
+  return [...out];
+}
+function lev(a,b){
+  const m=a.length,n=b.length;
+  if(Math.abs(m-n)>2) return 3;
+  const prev=new Array(n+1), cur=new Array(n+1);
+  for(let j=0;j<=n;j++) prev[j]=j;
+  for(let i=1;i<=m;i++){
+    cur[0]=i;
+    for(let j=1;j<=n;j++){
+      cur[j]=Math.min(prev[j]+1, cur[j-1]+1, prev[j-1]+(a[i-1]===b[j-1]?0:1));
+    }
+    for(let j=0;j<=n;j++) prev[j]=cur[j];
+  }
+  return prev[n];
+}
+/* Alle gültigen Antworten der aktiven Kapitel – damit ein anderes echtes
+   Vokabelwort nie als Tippfehler durchgeht (to look / to cook). */
+let KNOWN={en:new Set(),de:new Set()};
+function rebuildKnown(){
+  KNOWN={en:new Set(),de:new Set()};
+  pool().forEach(w=>{ variants(w.en).forEach(v=>KNOWN.en.add(v));
+                      variants(w.de).forEach(v=>KNOWN.de.add(v)); });
+}
+/* 'right' = genau, 'close' = ein Tippfehler, 'wrong' = daneben */
+function judge(given, solution, lang){
+  const g=fold(given), gs=stripLead(g);
+  if(!g) return 'wrong';
+  const vs=variants(solution);
+  if(vs.includes(g)||vs.includes(gs)) return 'right';
+  const known = lang && KNOWN[lang];
+  if(known && (known.has(g)||known.has(gs))) return 'wrong';   /* ist ein anderes Wort */
+  for(const v of vs){
+    const tol = v.length<=3?0 : v.length<=7?1 : 2;
+    if(tol && (lev(g,v)<=tol || lev(gs,v)<=tol)) return 'close';
+  }
+  return 'wrong';
+}
+function firstMeaning(s){ return String(s).split(/[,/]/)[0].trim(); }
+function otherMeanings(s){
+  const p=String(s).split(/[,/]/).map(x=>x.trim()).filter(Boolean);
+  return p.slice(1);
+}
+
+/* ==================================================================
+   5. Ton, Sprache, Konfetti
+   ================================================================== */
+let voices=[];
+function loadVoices(){ voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
+function speak(text,lang){
+  if(!window.speechSynthesis) return;
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const clean=firstMeaning(String(text).replace(/…/g,'')).replace(/\(.*?\)/g,'').trim();
+  if(!clean) return;
+  const want = lang==='en'?'en-GB':'de-DE';
+  if(!voices.length) loadVoices();
+  const u=new SpeechSynthesisUtterance(clean);
+  const v = voices.find(x=>x.lang&&x.lang.replace('_','-')===want)
+         || voices.find(x=>x.lang&&x.lang.toLowerCase().startsWith(lang));
+  if(v) u.voice=v;
+  u.lang=want; u.rate=.85; u.pitch=1.05;
+  const b=document.getElementById('say');
+  if(b){ b.classList.add('playing'); u.onend=()=>b.classList.remove('playing'); }
+  try{ speechSynthesis.speak(u); }catch(e){}
+}
+let actx=null;
+function beep(kind){
+  if(!state.data.settings.sound) return;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    actx=actx||new AC();
+    const seq = kind==='right'?[[660,0],[880,.09]]
+              : kind==='close'?[[560,0],[620,.09]]
+              : kind==='level'?[[520,0],[660,.1],[784,.2],[1046,.3]]
+              : [[200,0],[150,.1]];
+    seq.forEach(([f,t])=>{
+      const o=actx.createOscillator(), g=actx.createGain();
+      o.type= kind==='wrong'?'sine':'triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,actx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.16,actx.currentTime+t+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+t+.22);
+      o.connect(g); g.connect(actx.destination);
+      o.start(actx.currentTime+t); o.stop(actx.currentTime+t+.25);
+    });
+  }catch(e){}
+}
+function buzz(pattern){ try{ if(navigator.vibrate) navigator.vibrate(pattern); }catch(e){} }
+
+const cv=document.getElementById('confetti');
+const cx=cv&&cv.getContext?cv.getContext('2d'):null;
+let parts=[],raf=null;
+const reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function sizeCanvas(){ if(!cv) return; cv.width=innerWidth; cv.height=innerHeight; }
+addEventListener('resize',sizeCanvas); sizeCanvas();
+function confetti(n){
+  if(reduced||!cx) return;
+  const cols=['#E38F0B','#3350E0','#0E7F52','#C92A50','#8AA0FF','#FFC94D'];
+  for(let i=0;i<n;i++) parts.push({
+    x:innerWidth/2+(Math.random()-.5)*180, y:innerHeight*.4,
+    vx:(Math.random()-.5)*12, vy:-6-Math.random()*12,
+    s:5+Math.random()*8, rot:Math.random()*6.3, vr:(Math.random()-.5)*.4,
+    c:cols[(Math.random()*cols.length)|0], life:0});
+  if(!raf) raf=requestAnimationFrame(tick);
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life<140&&p.y<cv.height+40);
+  parts.forEach(p=>{
+    p.life++; p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.vx*=.995; p.rot+=p.vr;
+    cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot);
+    cx.fillStyle=p.c; cx.globalAlpha=Math.max(0,1-p.life/140);
+    cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); cx.restore();
+  });
+  if(parts.length) raf=requestAnimationFrame(tick); else { raf=null; cx.clearRect(0,0,cv.width,cv.height); }
+}
+function floatPoints(t){
+  if(reduced) return;
+  const d=document.createElement('div'); d.className='floatpts'; d.textContent=t;
+  document.body.appendChild(d); setTimeout(()=>d.remove(),1100);
+}
+
+/* ==================================================================
+   6. Kleinkram
+   ================================================================== */
+const $=s=>document.querySelector(s);
+const app=$('#app');
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(m){ const t=document.createElement('div'); t.className='toast'; t.textContent=m;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2300); }
+const SPEAKER='<svg viewBox="0 0 24 24" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 8.5a5 5 0 0 1 0 7"/><path d="M20 6a9 9 0 0 1 0 12"/></svg>';
+function buddy(mood,big){
+  const mouth = mood==='happy' ? '<path d="M32 50 q8 9 16 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>'
+              : mood==='sad'   ? '<path d="M33 53 q7 -7 14 0" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/>'
+              : '';
+  const eyes = mood==='happy'
+    ? '<path d="M25 33 q5 -6 10 0" stroke="var(--ink)" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M45 33 q5 -6 10 0" stroke="var(--ink)" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+    : '<circle class="eye" cx="30" cy="34" r="8"/><circle class="eye" cx="50" cy="34" r="8"/><circle class="pupil" cx="30" cy="35" r="3.6"/><circle class="pupil" cx="50" cy="35" r="3.6"/>';
+  return '<svg class="buddy '+(mood||'')+(big?' big':'')+'" viewBox="0 0 80 80" aria-hidden="true">'
+    +'<path class="body" d="M40 8c16 0 26 12 26 28 0 20-11 34-26 34S14 56 14 36C14 20 24 8 40 8z"/>'
+    +'<ellipse class="belly" cx="40" cy="50" rx="17" ry="18"/>'
+    + eyes
+    +'<path class="beak" d="M40 40 l6 7 -12 0z"/>'
+    + mouth +'</svg>';
+}
+function go(v,p){ state.view=v; state.payload=p; render(); try{scrollTo(0,0);}catch(e){} }
+function render(){
+  const v=state.view;
+  if(v==='home') return renderHome();
+  if(v==='sets') return renderSets();
+  if(v==='edit') return renderEdit();
+  if(v==='settings') return renderSettings();
+  if(v==='progress') return renderProgress();
+  if(v==='result') return renderResult();
+  return renderSession();
+}
+
+/* ==================================================================
+   7. Level und Punkte
+   ================================================================== */
+const LEVEL_NAMES=['Wortsammlerin','Entdeckerin','Kennerin','Profi','Wortmeisterin','Sprachheldin','Legende'];
+function levelInfo(){
+  const p=state.data.points.total, lvl=Math.floor(p/250)+1;
+  return {lvl, inLvl:p%250, need:250, name:LEVEL_NAMES[Math.min(lvl-1,LEVEL_NAMES.length-1)]};
+}
+function todayPoints(){ return state.data.points.days[todayKey()]||0; }
+function addPoints(n){
+  const P=state.data.points, t=todayKey();
+  const before=Math.floor(P.total/250);
+  P.total+=n;
+  const wasToday=P.days[t]||0;
+  P.days[t]=wasToday+n;
+  if(!wasToday){ /* erster Punkt heute: Tagesserie fortschreiben */
+    const y=todayKey(new Date(Date.now()-DAY));
+    P.dayStreak = (P.lastDay===y||P.lastDay===t)? (P.dayStreak||0)+1 : 1;
+    P.lastDay=t;
+  }
+  save();
+  return Math.floor(P.total/250)>before;
+}
+
+/* ==================================================================
+   8. Startseite
+   ================================================================== */
+function renderHome(){
+  const words=pool(), total=words.length;
+  const safe=words.filter(isSafe).length;
+  const due=dueCount(), neu=words.filter(isNew).length;
+  const L=levelInfo(), P=state.data.points;
+  const goal=state.data.settings.goal, today=todayPoints();
+  const pct=Math.min(100,Math.round(today/goal*100));
+  const C=2*Math.PI*26;
+
+  app.innerHTML=`
+    <div class="crown">
+      <span class="chip gold">★ ${P.total}<small>Punkte</small></span>
+      <span class="chip">Level ${L.lvl}<small>${esc(L.name)}</small></span>
+      ${P.dayStreak>1?`<span class="chip fire">🔥 ${P.dayStreak}<small>Tage</small></span>`:''}
+    </div>
+
+    <h1>Vokabelheft</h1>
+    <p class="lead">${safe} von ${total} Wörtern sitzen sicher${neu?` · ${neu} noch nie geübt`:''}</p>
+
+    <div class="ring">
+      <svg viewBox="0 0 66 66">
+        <circle class="track" cx="33" cy="33" r="26"></circle>
+        <circle class="fill" cx="33" cy="33" r="26"
+          stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C*(1-pct/100)).toFixed(1)}"
+          transform="rotate(-90 33 33)"></circle>
+        <text class="pct" x="33" y="40" text-anchor="middle">${pct}%</text>
+      </svg>
+      <div class="txt">
+        <div class="big">${today>=goal?'Tagesziel geschafft!':'Tagesziel'}</div>
+        <div class="small">${today} von ${goal} Punkten heute · ${due?due+' Wörter sind dran':neu?neu+' neue Wörter warten':'alles wiederholt'}</div>
+      </div>
+    </div>
+
+    <h2>Üben</h2>
+    <div class="modelist">
+      <button class="btn primary" data-mode="mix">Loslegen
+        <span class="sub">${due?due+' Wörter sind heute dran':neu?'neue Wörter kennenlernen':'gemischte Übung'}</span></button>
+      <button class="btn ghost" data-mode="choice">Antwort auswählen<span class="sub">vier Möglichkeiten, eine ist richtig</span></button>
+      <button class="btn ghost" data-mode="cards">Karteikarten<span class="sub">ansehen und umdrehen</span></button>
+      <button class="btn ghost" data-mode="en2de">Englisch → Deutsch<span class="sub">Antwort tippen</span></button>
+      <button class="btn ghost" data-mode="de2en">Deutsch → Englisch<span class="sub">Antwort tippen</span></button>
+      <button class="btn ghost" data-mode="listen">Hören und schreiben<span class="sub">nur zuhören, kein Wort zu sehen</span></button>
+    </div>
+
+    <h2>Wörter</h2>
+    <button class="btn quiet" id="toSets">${selectedSets().length} von ${state.data.sets.length} Kapiteln aktiv<span class="sub">auswählen und bearbeiten</span></button>
+    <button class="btn quiet" id="toProgress">Was sitzt schon?<span class="sub">Fortschritt Wort für Wort</span></button>
+
+    <footer>
+      <button class="btn quiet" id="toSettings">Einstellungen und Sicherung</button>
+    </footer>`;
+
+  app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>startSession(b.dataset.mode));
+  $('#toSets').onclick=()=>go('sets');
+  $('#toProgress').onclick=()=>go('progress');
+  $('#toSettings').onclick=()=>go('settings');
+}
+
+/* ==================================================================
+   9. Kapitel
+   ================================================================== */
+function renderSets(){
+  const sel=state.data.settings.selected;
+  app.innerHTML=`
+    <div class="topbar" style="display:flex;align-items:center">
+      <button class="back" id="back" style="font-weight:800;color:var(--brand);padding:12px 12px 12px 0">‹ Zurück</button>
+    </div>
+    <h1>Kapitel</h1>
+    <p class="lead">Geübt wird aus allen angehakten Kapiteln. Zum Ändern der Wörter auf den Stift tippen.</p>
+    <ul class="sets">
+      ${state.data.sets.map(s=>{
+        const ws=s.words.map(w=>({setId:s.id,en:w.en,de:w.de}));
+        const safe=ws.filter(isSafe).length;
+        const pct=s.words.length?Math.round(safe/s.words.length*100):0;
+        return `<li><div class="setrow ${sel.includes(s.id)?'on':''}">
+          <button class="check" data-pick="${s.id}" aria-label="Kapitel an- oder abwählen">✓</button>
+          <button class="name" data-edit="${s.id}">${esc(s.name)}
+            <span class="learned">${safe} von ${s.words.length} sitzen sicher</span>
+            <span class="minibar"><i style="width:${pct}%"></i></span>
+          </button>
+          <span class="iconbtn" aria-hidden="true">✎</span>
+        </div></li>`;
+      }).join('')}
+    </ul>
+    <button class="btn quiet" id="new">Neues Kapitel anlegen</button>
+    <footer><button class="btn primary" id="done">Fertig</button></footer>`;
+
+  app.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.pick, i=sel.indexOf(id);
+    if(i>=0){ if(sel.length>1) sel.splice(i,1); else return toast('Mindestens ein Kapitel muss aktiv sein'); }
+    else sel.push(id);
+    save(); renderSets();
+  });
+  app.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>go('edit',{id:b.dataset.edit}));
+  $('#new').onclick=()=>go('edit',{id:null});
+  $('#done').onclick=()=>go('home');
+  $('#back').onclick=()=>go('home');
+}
+
+/* ==================================================================
+   10. Wörter eintragen
+   ================================================================== */
+function renderEdit(){
+  const id=state.payload&&state.payload.id;
+  const set=state.data.sets.find(s=>s.id===id);
+  const text=set?set.words.map(w=>w.en+' = '+w.de).join('\n'):'';
+  app.innerHTML=`
+    <button class="back" id="back" style="font-weight:800;color:var(--brand);padding:12px 0">‹ Zurück</button>
+    <h1>${set?'Kapitel bearbeiten':'Neues Kapitel'}</h1>
+    <label for="nm">Name des Kapitels</label>
+    <input type="text" id="nm" value="${set?esc(set.name):''}" placeholder="z. B. Unit 2 – At home">
+    <label for="tx">Wörter</label>
+    <textarea id="tx" placeholder="house = Haus&#10;to draw = zeichnen&#10;bored = gelangweilt">${esc(text)}</textarea>
+    <p class="hint">Pro Zeile ein Wort: <b>englisch = deutsch</b>. Semikolon oder Tabulator gehen auch, eine kopierte Tabelle passt also direkt hinein. Mehrere Bedeutungen mit Komma trennen – jede davon zählt als richtige Antwort.</p>
+    <button class="btn primary" id="save">Speichern</button>
+    ${set?'<button class="btn ghost" id="append">Wörter anhängen statt ersetzen</button><button class="danger" id="del">Kapitel löschen</button>':''}
+    <footer></footer>`;
+  $('#back').onclick=()=>go(set?'sets':'home');
+  $('#save').onclick=()=>saveSet(set,false);
+  if($('#append')) $('#append').onclick=()=>saveSet(set,true);
+  if($('#del')) $('#del').onclick=()=>{
+    if(state.data.sets.length<2) return toast('Das letzte Kapitel bleibt stehen');
+    if(!confirm('Kapitel „'+set.name+'“ wirklich löschen?')) return;
+    state.data.sets=state.data.sets.filter(s=>s.id!==set.id);
+    state.data.settings.selected=state.data.settings.selected.filter(x=>x!==set.id);
+    if(!state.data.settings.selected.length) state.data.settings.selected=[state.data.sets[0].id];
+    save(); go('sets');
+  };
+}
+function parseWords(raw){
+  return raw.split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
+    const p=line.split(/\t|=|;|\s\|\s|\s{3,}/);
+    if(p.length<2) return null;
+    const en=p[0].trim(), de=p.slice(1).join(' ').trim();
+    return (en&&de)?{en,de}:null;
+  }).filter(Boolean);
+}
+function saveSet(set,append){
+  const name=$('#nm').value.trim()||'Neues Kapitel';
+  const words=parseWords($('#tx').value);
+  if(!words.length) return toast('Keine Zeile im Format „englisch = deutsch“ gefunden');
+  if(set){ set.name=name; set.words=append?set.words.concat(words):words; }
+  else{
+    const id='k'+Date.now();
+    state.data.sets.push({id,name,words});
+    state.data.settings.selected.push(id);
+  }
+  save(); toast(words.length+' Wörter gespeichert'); go('sets');
+}
+
+/* ==================================================================
+   11. Fortschrittsliste
+   ================================================================== */
+function renderProgress(){
+  const words=pool().slice().sort((a,b)=>((peek(a)&&peek(a).seen)?peek(a).box:9)-((peek(b)&&peek(b).seen)?peek(b).box:9));
+  const label=w=>{
+    const c=peek(w);
+    if(!c||c.seen===0) return 'noch nie geübt';
+    if(c.due>Date.now()){
+      const d=Math.round((c.due-Date.now())/DAY);
+      return STEP_NAMES[c.box+1]+(d>=1?' · wieder in '+d+' Tag'+(d>1?'en':''):' · heute nochmal');
+    }
+    return STEP_NAMES[c.box+1]+' · jetzt dran';
+  };
+  app.innerHTML=`
+    <button class="back" id="back" style="font-weight:800;color:var(--brand);padding:12px 0">‹ Zurück</button>
+    <h1>Was sitzt schon?</h1>
+    <p class="lead">Wörter mit Fehlern stehen oben und kommen am häufigsten dran.</p>
+    ${words.map(w=>{
+      const c=peek(w)||{f:0};
+      return `<div class="wrongword"><b>${esc(w.en)}</b>
+        <span>${esc(firstMeaning(w.de))}<br>${esc(label(w))}${c.f?` · ${c.f}× daneben`:''}</span></div>`;
+    }).join('')}
+    <footer><button class="btn primary" id="home">Zurück zum Start</button></footer>`;
+  $('#back').onclick=()=>go('home'); $('#home').onclick=()=>go('home');
+}
+
+/* ==================================================================
+   12. Einstellungen
+   ================================================================== */
+function renderSettings(){
+  const P=state.data.points, S=state.data.settings;
+  app.innerHTML=`
+    <button class="back" id="back" style="font-weight:800;color:var(--brand);padding:12px 0">‹ Zurück</button>
+    <h1>Einstellungen</h1>
+    <div class="switch"><span>Wörter automatisch vorlesen</span>
+      <input type="checkbox" id="auto" ${S.autoSpeak?'checked':''}></div>
+    <div class="switch"><span>Töne bei richtig und falsch</span>
+      <input type="checkbox" id="snd" ${S.sound?'checked':''}></div>
+    <label for="goal">Tagesziel in Punkten</label>
+    <input type="number" id="goal" min="20" max="500" step="10" value="${S.goal}">
+    <label for="np">Neue Wörter pro Runde</label>
+    <input type="number" id="np" min="1" max="15" value="${S.newPerRound}">
+    <p class="hint">Weniger neue Wörter pro Runde heißt mehr Wiederholung – gut, wenn viel Altes wackelt.</p>
+
+    <h2>Bisher geschafft</h2>
+    <div class="crown">
+      <span class="chip gold">★ ${P.total}<small>Punkte</small></span>
+      <span class="chip fire">${P.bestStreak}<small>beste Serie</small></span>
+      <span class="chip">${P.rounds}<small>Runden</small></span>
+      <span class="chip">${P.perfect}<small>fehlerfrei</small></span>
+    </div>
+
+    <h2>Sicherung</h2>
+    <p class="lead">${storageWorks?'Wörter, Punkte und Wiederholungsplan bleiben in diesem Browser gespeichert.':'Dieser Browser speichert nichts dauerhaft. Sichere die Wörter als Datei.'}</p>
+    <button class="btn ghost" id="exp">Alles als Datei sichern</button>
+    <label for="imp">Sicherung wieder einlesen</label>
+    <textarea id="imp" placeholder="Inhalt der Sicherungsdatei hier einfügen"></textarea>
+    <button class="btn quiet" id="impBtn">Einlesen</button>
+    <button class="danger" id="reset">Punkte und Wiederholungsplan zurücksetzen</button>
+    <footer></footer>`;
+
+  $('#back').onclick=()=>go('home');
+  $('#auto').onchange=e=>{S.autoSpeak=e.target.checked;save();};
+  $('#snd').onchange=e=>{S.sound=e.target.checked;save(); if(e.target.checked) beep('right');};
+  $('#goal').onchange=e=>{S.goal=Math.max(20,Math.min(500,+e.target.value||60));save();};
+  $('#np').onchange=e=>{S.newPerRound=Math.max(1,Math.min(15,+e.target.value||5));save();};
+  $('#exp').onclick=()=>{
+    const blob=new Blob([JSON.stringify(state.data)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download='vokabelheft-sicherung.json'; a.click();
+  };
+  $('#impBtn').onclick=()=>{
+    try{
+      const d=JSON.parse($('#imp').value);
+      if(!d.sets) throw 0;
+      state.data = d.cards? d : migrate(d);
+      save(); toast('Sicherung eingelesen'); go('home');
+    }catch(e){ toast('Das war keine gültige Sicherung'); }
+  };
+  $('#reset').onclick=()=>{
+    if(!confirm('Punkte und Wiederholungsplan zurücksetzen? Die Wörter bleiben erhalten.')) return;
+    state.data.cards={};
+    state.data.points={total:0,rounds:0,bestStreak:0,perfect:0,days:{},dayStreak:0,lastDay:null};
+    save(); toast('Zurückgesetzt'); renderSettings();
+  };
+}
+
+/* ==================================================================
+   13. Übungsrunde
+   ================================================================== */
+const ROUND=12;
+function pickMode(base){
+  if(base!=='mix') return base;
+  const r=Math.random();
+  return r<.34?'choice' : r<.67?'en2de' : 'de2en';
+}
+function startSession(base){
+  if(pool().length<4) return toast('Trag zuerst ein paar Wörter ein');
+  rebuildKnown();
+  const queue=buildQueue(ROUND).map(w=>({w, mode:pickMode(base), again:false}));
+  state.session={base, queue, i:0, done:0, planned:queue.length,
+                 right:0, gained:0, streak:0, best:0, wrong:[], marks:[],
+                 shown:false, checked:false, flash:null, chosen:null};
+  go('session');
+}
+
+/* falsch beantwortet: Wort kommt in derselben Runde noch einmal */
+function requeue(item){
+  const s=state.session;
+  const pos=Math.min(s.queue.length, s.i+3);
+  s.queue.splice(pos,0,{w:item.w, mode:item.mode, again:true});
+}
+
+function distractors(w,mode){
+  const askEnglish=(mode==='de2en');
+  const want=askEnglish?'en':'de';
+  const right=askEnglish?w.en:firstMeaning(w.de);
+  const cands=pool().filter(x=>x.en!==w.en)
+    .map(x=>askEnglish?x.en:firstMeaning(x.de))
+    .filter(t=>t && fold(t)!==fold(right));
+  const uniq=[...new Set(cands)];
+  /* ähnlich lange Wörter bevorzugen: das macht die Auswahl fair statt geschenkt */
+  uniq.sort((a,b)=>Math.abs(a.length-right.length)-Math.abs(b.length-right.length));
+  const near=uniq.slice(0,Math.max(8,Math.ceil(uniq.length*.4)));
+  const out=[];
+  while(out.length<3 && near.length){
+    const k=(Math.random()*near.length)|0;
+    out.push(near.splice(k,1)[0]);
+  }
+  while(out.length<3 && uniq.length) out.push(uniq.pop());
+  return out;
+}
+
+function renderSession(){
+  const s=state.session;
+  if(!s) return go('home');
+  if(s.i>=s.queue.length) return go('result');
+  const item=s.queue[s.i], w=item.w, mode=item.mode;
+  const askEnglish=(mode==='de2en'), listen=(mode==='listen'), choice=(mode==='choice');
+  const solution=(askEnglish||listen)?w.en:w.de;
+  const label = listen?'Hör zu und schreib das englische Wort'
+              : askEnglish?'Wie heißt das auf Englisch?'
+              : mode==='cards'?'Was heißt das?'
+              : choice?'Welche Antwort stimmt?'
+              : 'Wie heißt das auf Deutsch?';
+  const prompt = listen?(s.checked?w.en:'· · ·'):(askEnglish?firstMeaning(w.de):w.en);
+
+  if(choice && !s.options){
+    const right=askEnglish?w.en:firstMeaning(w.de);
+    s.options=[right,...distractors(w,mode)].sort(()=>Math.random()-.5);
+  }
+
+  const mood = s.checked ? (s.wasRight?'happy':'sad') : 'idle';
+
+  app.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="back" id="back" style="font-weight:800;color:var(--brand);padding:12px 12px 12px 0">‹ Ende</button>
+      <span style="flex:1;font-weight:800;color:var(--rose);font-size:15px">${s.streak>=3?'🔥 '+s.streak+'er Serie':''}</span>
+      <span style="font-weight:900;color:var(--ink-soft);font-variant-numeric:tabular-nums">${s.done} / ${s.queue.length}</span>
+    </div>
+    <div class="dots">${s.queue.map((q,idx)=>{
+        const m=s.marks[idx];
+        return `<i class="${m||(idx===s.i?'now':'')}"></i>`;}).join('')}</div>
+
+    <div class="stage">
+      <div class="card ${s.flash||''}">
+        ${item.again?'<span class="tag repeat">Nochmal</span>':(isNew(w)?'<span class="tag">Neues Wort</span>':(isLapsed(w)?'<span class="tag repeat">Saß noch nicht</span>':''))}
+        ${buddy(mood)}
+        <div class="prompt-label">${label}</div>
+        <div class="word ${listen&&!s.checked?'muted':''}">${esc(prompt)}</div>
+        <button class="speak" id="say" aria-label="Wort vorlesen">${SPEAKER}</button>
+
+        ${mode==='cards' ? (s.shown
+            ? `<div class="solution">${esc(firstMeaning(w.de))}</div>
+               ${otherMeanings(w.de).length?`<div class="alts">auch: ${esc(otherMeanings(w.de).join(', '))}</div>`:''}`
+            : `<div class="tapme">Tippe auf die Karte</div>`)
+         : choice
+          ? `<div class="opts" id="opts">${s.options.map((o,k)=>
+               `<button class="opt" data-k="${k}">${esc(o)}</button>`).join('')}</div>
+             <div class="verdict ${s.verdict||''}" id="vd" aria-live="polite">${s.verdictText||''}</div>`
+          : `<div class="answerbox"><input id="inp" type="text" inputmode="text" autocomplete="off"
+                autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Antwort"></div>
+             <div class="verdict ${s.verdict||''}" id="vd" aria-live="polite">${s.verdictText||''}</div>`}
+      </div>
+    </div>
+
+    ${mode==='cards'
+      ? (s.shown
+          ? `<div class="row"><button class="btn ghost" id="again">Nochmal üben</button>
+             <button class="btn primary" id="knew">Gewusst</button></div>`
+          : `<button class="btn primary" id="flip">Umdrehen</button>`)
+      : (s.checked
+          ? `<button class="btn primary" id="next">Weiter</button>`
+          : choice ? ''
+          : `<button class="btn primary" id="check">Prüfen</button>
+             <button class="btn quiet" id="skip">Weiß ich nicht</button>`)}
+    <footer></footer>`;
+
+  /* Vorlesen */
+  const sayText = (askEnglish&&!s.checked)?firstMeaning(w.de):w.en;
+  const sayLang = (askEnglish&&!s.checked)?'de':'en';
+  $('#say').onclick=()=>speak(sayText,sayLang);
+  if(state.data.settings.autoSpeak && !s.checked && (listen||(!askEnglish)))
+    setTimeout(()=>speak(w.en,'en'),300);
+
+  $('#back').onclick=()=>{ state.session=null; go('home'); };
+  s.flash=null;
+
+  if(mode==='cards'){
+    app.querySelector('.card').onclick=e=>{ if(e.target.closest('#say')) return; s.shown=!s.shown; render(); };
+    if(s.shown){
+      $('#knew').onclick=()=>{ reward('right'); finish(item,'right'); };
+      $('#again').onclick=()=>{ reward('wrong'); finish(item,'wrong'); };
+    } else $('#flip').onclick=()=>{ s.shown=true; render(); };
+
+  } else if(choice){
+    if(s.checked){
+      const right=askEnglish?w.en:firstMeaning(w.de);
+      app.querySelectorAll('.opt').forEach(b=>{
+        const t=s.options[+b.dataset.k];
+        if(fold(t)===fold(right)) b.classList.add('right');
+        else if(+b.dataset.k===s.chosen) b.classList.add('wrong');
+        else b.classList.add('dim');
+        b.disabled=true;
+      });
+      $('#next').onclick=()=>finish(item,s.wasRight?'right':'wrong');
+    }else{
+      app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+        const right=askEnglish?w.en:firstMeaning(w.de);
+        s.chosen=+b.dataset.k;
+        verdict(fold(s.options[s.chosen])===fold(right)?'right':'wrong', solution);
+      });
+    }
+
+  } else {
+    const inp=$('#inp');
+    if(s.checked){
+      if(inp){ inp.value=s.lastAnswer||''; inp.disabled=true;
+               inp.classList.add(s.wasRight?'ok':'no'); }
+      $('#next').onclick=()=>finish(item, s.quality);
+    }else if(inp){
+      setTimeout(()=>{ try{inp.focus();}catch(e){} },80);
+      inp.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } };
+      $('#check').onclick=check;
+      $('#skip').onclick=()=>{ s.lastAnswer=''; verdict('wrong',solution); };
+    }
+  }
+
+  function reward(kind){
+    if(kind==='wrong'){ s.streak=0; beep('wrong'); buzz([35,60,35]); return; }
+    const pts = kind==='close'?5 : (10 + (s.streak>=2?5:0) + (s.streak>=5?5:0));
+    s.streak++; s.best=Math.max(s.best,s.streak);
+    s.gained+=pts; floatPoints('+'+pts); beep(kind); buzz(20);
+    if(s.streak===3||s.streak===6||s.streak===10) confetti(30);
+  }
+
+  function check(){ s.lastAnswer=$('#inp').value;
+    verdict(judge(s.lastAnswer, solution, (askEnglish||listen)?'en':'de'), solution); }
+
+  function verdict(kind,sol){
+    s.checked=true; s.quality=kind;
+    s.wasRight = kind!=='wrong';
+    s.flash = kind==='wrong'?'no':'ok';
+    s.verdict = kind==='right'?'ok':kind==='close'?'close':'no';
+    const alts=otherMeanings(sol);
+    const solLine = `<div class="solution">${esc(firstMeaning(sol))}</div>`
+      + (alts.length?`<div class="alts">auch richtig: ${esc(alts.join(', '))}</div>`:'');
+    s.verdictText = kind==='right' ? 'Richtig!'+ (alts.length?`<div class="alts">auch richtig: ${esc(alts.join(', '))}</div>`:'')
+      : kind==='close' ? 'Fast! Schau dir die Schreibweise an:'+solLine
+      : 'Richtig ist:'+solLine;
+    reward(kind);
+    render();
+    if(kind!=='right' && state.data.settings.autoSpeak)
+      setTimeout(()=>speak(sol,(askEnglish||listen)?'en':'de'),260);
+  }
+}
+
+/* Wort abschließen: planen, zählen, ggf. in derselben Runde wiederholen */
+function finish(item,kind){
+  const s=state.session, w=item.w;
+  const q = kind==='right'?2 : kind==='close'?1 : 0;
+  schedule(w,q);
+  if(kind==='wrong'){
+    if(!item.again) requeue(item);
+    s.marks[s.i]='miss';
+    if(!s.wrong.some(x=>x.en===w.en&&x.de===w.de)) s.wrong.push(w);
+  }else{
+    s.marks[s.i]='done';
+    if(!item.again) s.right++;
+  }
+  s.done++;
+  s.i++;
+  s.shown=false; s.checked=false; s.verdict=null; s.verdictText='';
+  s.lastAnswer=''; s.options=null; s.chosen=null; s.quality=null;
+  if(s.i>=s.queue.length) return go('result');
+  render();
+}
+
+/* ==================================================================
+   14. Ergebnis
+   ================================================================== */
+function renderResult(){
+  const s=state.session;
+  const planned=s.planned;
+  const quote=planned?s.right/planned:0;
+  const stars = quote>=1?3 : quote>=.7?2 : quote>=.4?1 : 0;
+  const bonus = stars===3?50 : stars===2?20 : 0;
+  const P=state.data.points;
+  const levelUp=addPoints(s.gained+bonus);
+  P.rounds++; P.bestStreak=Math.max(P.bestStreak,s.best);
+  if(quote>=1) P.perfect++;
+  save();
+  const L=levelInfo();
+  const goalReached = todayPoints()>=state.data.settings.goal;
+  const nextDue = pool().filter(w=>peek(w)&&peek(w).due>Date.now())
+    .sort((a,b)=>peek(a).due-peek(b).due)[0];
+  const soon = nextDue? Math.max(1,Math.round((peek(nextDue).due-Date.now())/DAY)) : null;
+
+  if(stars>0) setTimeout(()=>beep('level'),400);
+
+  app.innerHTML=`
+    <div class="stage">
+      <div class="card">
+        ${buddy(stars>=2?'happy':'idle',true)}
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <div class="prompt-label">Beim ersten Versuch richtig</div>
+        <div class="result-num">${s.right} / ${planned}</div>
+        <div class="gain">+ ${s.gained+bonus} Punkte${bonus?' (mit '+bonus+' Bonus)':''}</div>
+      </div>
+      ${levelUp?`<div class="badge"><span class="ico">🏅</span><span>Level ${L.lvl} erreicht: ${esc(L.name)}</span></div>`:''}
+      ${goalReached?`<div class="badge"><span class="ico">🎯</span><span>Tagesziel geschafft${P.dayStreak>1?` – ${P.dayStreak} Tage in Folge`:''}</span></div>`:''}
+      ${s.best>=5?`<div class="badge"><span class="ico">🔥</span><span>${s.best} richtige Antworten hintereinander</span></div>`:''}
+    </div>
+
+    ${s.wrong.length?`<h2>Diese Wörter kommen bald wieder</h2>
+      ${s.wrong.map(w=>`<div class="wrongword"><b>${esc(w.en)}</b><span>${esc(w.de)}</span></div>`).join('')}
+      <div class="nextline">Falsche Wörter kommen schon in ein paar Minuten wieder dran, richtige erst nach ein paar Tagen.</div>`
+     :`<div class="nextline">Alles beim ersten Versuch richtig.${soon?` Die nächste Wiederholung ist in etwa ${soon} Tag${soon>1?'en':''} dran.`:''}</div>`}
+
+    <footer>
+      <button class="btn primary" id="again">Nächste Runde</button>
+      <button class="btn quiet" id="home">Zur Übersicht</button>
+    </footer>`;
+
+  const st=app.querySelectorAll('.star');
+  for(let i=0;i<stars;i++) setTimeout(()=>st[i].classList.add('lit'),240+i*280);
+  if(stars===3) setTimeout(()=>confetti(130),950);
+  else if(stars===2) setTimeout(()=>confetti(60),850);
+  if(levelUp) setTimeout(()=>confetti(150),1400);
+
+  $('#again').onclick=()=>startSession(s.base);
+  $('#home').onclick=()=>{ state.session=null; go('home'); };
+}
+
+render();
+</script>
+</body>
+</html>
