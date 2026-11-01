@@ -333,6 +333,36 @@ const START_SETS = [
     ['room','Zimmer, Raum'],['to say','sagen'],['there','dort, dahin'],
     ['student','Schüler, Schülerin'],['to want','wollen, mögen'],
     ['drink','Getränk'],['classroom','Klassenzimmer']
+  ]},
+  {id:'u10', name:'Unit 1 – Klassenraum & Schule', words:[
+    ['word','Wort'],['place','Ort, Stelle, Platz'],['people','Leute, Menschen'],
+    ['nice','schön, nett, lieb'],['there is','da ist, es gibt'],['there are','da sind, es gibt'],
+    ['class','Klasse, Schulklasse'],['media centre','Medienzentrum'],['table','Tisch'],
+    ['headphones','Kopfhörer'],['to use','benutzen, verwenden, gebrauchen'],
+    ['break','Pause'],['power socket','Steckdose'],['reading corner','Leseecke'],
+    ['newspaper','Zeitung'],['magazine','Zeitschrift'],['to find','finden, herausfinden'],
+    ['man','Mann'],['men','Männer'],['behind','hinter'],
+    ['information desk','Infotheke'],['noticeboard','schwarzes Brett'],['next to','neben'],
+    ['door','Tür'],['wall','Wand, Mauer'],['chair','Stuhl'],['clock','Uhr'],
+    ['desk','Schreibtisch']
+  ]},
+  {id:'u11', name:'Unit 1 – Chill-out area', words:[
+    ['slide','Rutschbahn'],['chill-out area','Platz zum Chillen, Chill-Ecke'],
+    ['sofa','Sofa, Couch'],['screen','Bildschirm'],['seat','Sitz, Sitzplatz'],
+    ['outdoor area','Freiluftbereich'],['sun lounger','Sonnenliege'],
+    ['robot','Roboter, Automat'],['lamp','Lampe, Leuchte'],
+    ['VR goggles','VR-Brille'],['lots of','viel, viele, jede Menge']
+  ]},
+  {id:'u12', name:'Unit 1 – Station 3: Essen & Höflichkeit', words:[
+    ['to forget','vergessen'],['veggie','vegetarisch'],['chips','Pommes frites'],
+    ['yuk','igitt'],['allergic to','allergisch gegen'],['tomato','Tomate'],
+    ['tomatoes','Tomaten'],['fresh','frisch'],['all','alle, alles, ganz'],
+    ['to stare','starren, anstarren'],['rude','unhöflich, unverschämt'],
+    ['to do','machen, tun'],['to bring','bringen, mitbringen'],['to buy','kaufen'],
+    ['to eat','essen, fressen'],['our','unser, unsere'],
+    ['to talk about','sprechen über, reden über'],['polite','höflich'],
+    ['too','zu'],['classmate','Klassenkamerad, Mitschüler'],
+    ['homework','Hausaufgaben']
   ]}
 ];
 
@@ -357,7 +387,7 @@ function freshData(){
     sets: START_SETS.map(s=>({id:s.id,name:s.name,words:s.words.map(w=>({en:w[0],de:w[1]}))})),
     cards:{},
     points:{total:0,rounds:0,bestStreak:0,perfect:0,days:{},dayStreak:0,lastDay:null},
-    settings:{autoSpeak:true,sound:true,goal:60,newPerRound:8,selected:['u1','u2','u3','u4','u5','u6','u7','u8','u9']}
+    settings:{autoSpeak:true,sound:true,goal:60,newPerRound:8,selected:['u1','u2','u3','u4','u5','u6','u7','u8','u9','u10','u11','u12']}
   };
 }
 function migrate(old){
@@ -890,7 +920,7 @@ function renderSettings(){
     </div>
 
     <h2>Version</h2>
-    <p class="lead">Stand 24.09.2026 · 9 mitgelieferte Kapitel</p>
+    <p class="lead">Stand 01.11.2026 · 12 mitgelieferte Kapitel</p>
 
     <h2>Sicherung</h2>
     <p class="lead">${storageWorks?'Wörter, Punkte und Wiederholungsplan bleiben in diesem Browser gespeichert.':'Dieser Browser speichert nichts dauerhaft. Sichere die Wörter als Datei.'}</p>
